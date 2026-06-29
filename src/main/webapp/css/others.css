@@ -1,0 +1,131 @@
+@charset "UTF-8";
+/* ==========================================
+   PC版のスタイル（初期状態）
+   ========================================== */
+
+/* 特定商取引法、会社概要 */
+h2 {
+	text-align: center;
+	font-weight: normal;
+	margin-top: 50px;
+}
+table {
+	width: 70%;
+	margin: 50px auto;
+	border-collapse: collapse;
+	border: 1px solid #ccc;
+}
+table th {
+	background-color: #e5e5e5;
+	font-weight: normal;
+	text-align: left;
+	padding: 12px 15px;
+	width: 35%;
+}
+table td {
+	padding: 12px 15px;
+	line-height: 1.8;
+}
+table tr {
+	border-bottom: 1px solid #ddd;
+}
+
+/* お問い合わせ */
+form {
+	display: flex;
+	flex-direction: column;
+	width: 50%;
+	margin: 0 auto;
+	gap: 20px;
+}
+form input {
+	padding-left: 0.5rem;
+	height: 1.75rem;
+	width: 99%;
+}
+form select {
+	height: 1.8rem;
+}
+form textarea {
+	width: 100%;
+}
+.contact-btn {
+	width: 50%;
+	margin: 0 auto;
+	margin-top: 5%;
+}
+
+/* プライバシーポリシー */
+.privacy-policy-wrapper {
+	width: 50%;
+	margin: 0 auto;
+}
+.privacy-policy-wrapper h3 {
+	margin-top: 5%;
+}
+
+/* エラー画面 */
+.error-wrapper {
+	width: 80%;
+	margin: 80px auto;
+	text-align: center;
+	padding: 40px;
+}
+
+/* ==========================================
+   スマホ版のスタイル（画面幅750px以下）
+   ========================================== */
+@media(max-width: 750px) {
+	/* 特定商取引法、会社概要 */
+	table {
+         width: 90%;
+    	margin: 50px auto;
+        border-collapse: collapse;
+    }
+    table,
+    table tbody,
+    table tr,
+    table th,
+    table td {
+        display: block;
+        box-sizing: border-box;
+    }
+    table th {
+        background: #e5e5e5;
+        text-align: left;
+        padding: 12px 15px;
+        border: 1px solid #ccc;
+        border-bottom: none;
+        width: 100%;
+    }
+    table td {
+        padding: 12px 15px;
+        border: 1px solid #ccc;
+        border-bottom: none;
+        width: 100%;
+    }
+    /* 一番最後だけ下線を付ける */ 
+    table tr:last-child td {
+        border-bottom: 1px solid #ccc;
+    }
+    
+    /* お問い合わせ */
+    form {
+		width: 85%;
+	}
+	form input {
+		width: 98%;
+	}
+	.contact-btn {
+		width: 75%;
+		margin-top: 5%;
+	}
+	
+	/* プライバシーポリシー */
+	.privacy-policy-wrapper {
+		width: 80%;
+	}
+	.privacy-policy-wrapper h3 {
+		margin-top: 10%;
+	}
+}
