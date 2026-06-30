@@ -716,7 +716,7 @@ public class ProductsDAO {
 		try {
 			// SQLを準備
 			String sql = "UPDATE products "
-						+ "SET stock = stock - ? "
+						+ "SET stock = stock - ?, mod_date = CURRENT_TIMESTAMP "
 						+ "WHERE product_id = ?";
 
 			PreparedStatement pStmt = conn.prepareStatement(sql);
@@ -834,7 +834,7 @@ public class ProductsDAO {
 
 			// SQLを準備
 			String sql = "UPDATE products "
-						+ "SET stock = stock + ? "
+						+ "SET stock = stock + ?, mod_date = CURRENT_TIMESTAMP "
 						+ "WHERE product_id = ?";
 
 			PreparedStatement pStmt = conn.prepareStatement(sql);

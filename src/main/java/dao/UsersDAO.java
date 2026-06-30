@@ -211,7 +211,9 @@ public class UsersDAO {
 		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
 
 			// SQLを準備
-			String sql = "UPDATE users SET token = ?, expire = ? WHERE user_id = ?";
+			String sql = "UPDATE users "
+						+ "SET token = ?, expire = ?, mod_date = CURRENT_TIMESTAMP "
+						+ "WHERE user_id = ?";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setString(1, token);
 			pStmt.setTimestamp(2, java.sql.Timestamp.valueOf(expire));
@@ -327,7 +329,9 @@ public class UsersDAO {
 		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
 
 			// SQLを準備
-			String sql = "UPDATE users SET password = ? WHERE user_id = ?";
+			String sql = "UPDATE users "
+						+ "SET password = ?, mod_date = CURRENT_TIMESTAMP "
+						+ "WHERE user_id = ?";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setString(1, newPassword);
 			pStmt.setInt(2, userId);
@@ -366,7 +370,7 @@ public class UsersDAO {
 
 			// SQLを準備
 			String sql = "UPDATE users "
-						+ "SET token = NULL, expire = NULL "
+						+ "SET token = NULL, expire = NULL, mod_date = CURRENT_TIMESTAMP "
 						+ "WHERE user_id = ?";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setInt(1, userId);
@@ -540,7 +544,7 @@ public class UsersDAO {
 			String sql = "UPDATE users "
 						+ "SET sei = ?, mei = ?, birthday = ?, gender = ?, postal_code = ?, "
 						+ "prefecture = ?, address = ?, building = ?, phone_number = ?, "
-						+ "mail = ?, password = ?, mod_date = ? "
+						+ "mail = ?, password = ?, mod_date = CURRENT_TIMESTAMP "
 						+ "WHERE user_id = ?";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setString(1, user.getSei());
@@ -554,8 +558,7 @@ public class UsersDAO {
 			pStmt.setString(9, user.getPhoneNumber());
 			pStmt.setString(10, user.getMail());
 			pStmt.setString(11, user.getPassword());
-			pStmt.setTimestamp(12, new java.sql.Timestamp(System.currentTimeMillis()));
-			pStmt.setInt(13, user.getUserId());
+			pStmt.setInt(12, user.getUserId());
 
 			// SQLを実行
 			int result = pStmt.executeUpdate();
@@ -591,11 +594,10 @@ public class UsersDAO {
 
 			// SQLを準備
 			String sql = "UPDATE users "
-						+ "SET del_flag = 1, del_date = ? "
+						+ "SET del_flag = 1, mod_date = CURRENT_TIMESTAMP, del_date = CURRENT_TIMESTAMP "
 						+ "WHERE user_id = ?";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
-			pStmt.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
-			pStmt.setInt(2, userId);
+			pStmt.setInt(1, userId);
 
 			// SQLを実行
 			int result = pStmt.executeUpdate();
