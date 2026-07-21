@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dao.ReviewsDAO;
-import model.Review;
+import model.entity.Review;
 
 /**
  * レビューDAOテストクラス
@@ -12,8 +12,10 @@ import model.Review;
 public class ReviewsDAOTest {
 
 	public static void main(String[] args) {
-		testReviewFindByProductIdOK();	// 商品IDでレビューが見つかるテスト	
-		testReviewFindByProductIdNG();	// 商品IDでレビューが見つからないテスト
+//		testReviewFindByProductIdOK();	// 商品IDでレビューが見つかるテスト	
+//		testReviewFindByProductIdNG();	// 商品IDでレビューが見つからないテスト
+		testRegistReviewOK();				// レビューを投稿するテスト
+		testRegistReviewNG();				// レビューを投稿できないテスト
 	}
 	public static void testReviewFindByProductIdOK() {
 		ReviewsDAO dao = new ReviewsDAO();
@@ -35,6 +37,36 @@ public class ReviewsDAOTest {
 			System.out.println("testReviewFindByProductIdNG：成功しました");
 		} else {
 			System.out.println("testReviewFindByProductIdNG：失敗しました");
+		}
+	}
+	
+	public static void testRegistReviewOK() {
+		ReviewsDAO dao = new ReviewsDAO();
+		Review review = new Review();
+		review.setUserId(1);
+		review.setProductId(1);
+		review.setStar(1);
+		review.setReviewText("テスト");
+		boolean result = dao.registReview(review);
+		if(result) {
+			System.out.println("testRegistReviewOK：成功しました" );
+		} else {
+			System.out.println("testRegistReviewOK：失敗しました" );
+		}
+	}
+	
+	public static void testRegistReviewNG() {
+		ReviewsDAO dao = new ReviewsDAO();
+		Review review = new Review();
+		review.setUserId(100);
+		review.setProductId(1);
+		review.setStar(1);
+		review.setReviewText(null);
+		boolean result = dao.registReview(review);
+		if(!result) {
+			System.out.println("testRegistReviewNG：成功しました" );
+		} else {
+			System.out.println("testRegistReviewNG：失敗しました" );
 		}
 	}
 }

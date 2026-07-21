@@ -1,8 +1,8 @@
 package test;
 
 import model.Login;
-import model.LoginLogic;
-import model.User;
+import model.entity.User;
+import model.logic.login.LoginLogic;
 
 /**
  * ログインロジックテストクラス

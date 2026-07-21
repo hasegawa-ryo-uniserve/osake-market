@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 
 import model.Gender;
 import model.Login;
-import model.User;
+import model.entity.User;
 
 /**
- * ユーザーDAOクラス
+ * 会員DAOクラス
  */
 public class UsersDAO {
 	/** ドライバクラス名 */
@@ -34,7 +34,7 @@ public class UsersDAO {
 	 * ログイン情報と同じユーザーがあるか探す 
 	 * 
 	 * @param login ログイン情報
-	 * @return ユーザー 
+	 * @return 会員
 	 * @throws ClassNotFoundException 
 	 *         ドライバクラスが見つからなかった場合 
 	 * @throws SQLException 
@@ -53,10 +53,10 @@ public class UsersDAO {
 
 			// SQLを準備
 			String sql = "SELECT user_id, sei, mei, birthday, gender, postal_code, prefecture,"
-					+ "address, building, phone_number, mail, password, token, expire, create_date, mod_date,"
-					+ "del_date, del_flag "
-					+ "FROM users "
-					+ "WHERE mail = ? AND password = ?";
+						+ "address, building, phone_number, mail, password, token, expire, create_date, mod_date,"
+						+ "del_date, del_flag "
+						+ "FROM users "
+						+ "WHERE mail = ? AND password = ? AND del_flag = 0";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setString(1, login.getMail());
 			pStmt.setString(2, login.getPassword());
@@ -65,8 +65,87 @@ public class UsersDAO {
 			ResultSet rs = pStmt.executeQuery();
 
 			if (rs.next()) {
-				// ユーザーが存在したらデータを取得
-				// そのユーザーを表すUserインスタンスを生成
+				// 会員が存在したらデータを取得
+				// その会員を表すUserインスタンスを生成
+				Integer userId = rs.getInt("user_id");
+				String sei = rs.getString("sei");
+				String mei = rs.getString("mei");
+				LocalDate birthday = rs.getDate("birthday").toLocalDate();
+				int genderInt = rs.getInt("gender");
+				Gender gender = switch (genderInt) {
+					case 1 -> Gender.MALE;
+					case 2 -> Gender.FEMALE;
+					default -> Gender.OTHER;
+				};
+				String postalCode = rs.getString("postal_code");
+				String prefecture = rs.getString("prefecture");
+				String address = rs.getString("address");
+				String building = rs.getString("building");
+				String phoneNumber = rs.getString("phone_number");
+				String mail = rs.getString("mail");
+				String password = rs.getString("password");
+				String token = rs.getString("token");
+				Timestamp ts = rs.getTimestamp("expire");
+				LocalDateTime expire = (ts != null) ? ts.toLocalDateTime() : null;
+				ts = rs.getTimestamp("create_date");
+				LocalDateTime createDate = (ts != null) ? ts.toLocalDateTime() : null;
+				ts = rs.getTimestamp("mod_date");
+				LocalDateTime modDate = (ts != null) ? ts.toLocalDateTime() : null;
+				ts = rs.getTimestamp("del_date");
+				LocalDateTime delDate = (ts != null) ? ts.toLocalDateTime() : null;
+				int delFlagInt = rs.getInt("del_flag");
+				boolean delFlag = false;
+				if (delFlagInt == 0) {
+					delFlag = false;
+				} else if (delFlagInt == 1) {
+					delFlag = true;
+				}
+				user = new User(userId, sei, mei, birthday, gender, postalCode, prefecture, address, building,
+						phoneNumber, mail, password, token, expire, createDate, modDate, delDate, delFlag);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return user;
+	}
+
+	/**
+	 * パスワードリセットを送るためのメールアドレスを探す
+	 * 
+	 * @param resetMail パスワードリセット用メールアドレス
+	 * @return 会員
+	 * @throws ClassNotFoundException 
+	 *         ドライバクラスが見つからなかった場合 
+	 * @throws SQLException 
+	 *         DB接続に失敗した場合 
+	 */
+	public User findByMail(String resetMail) {
+		User user = null;
+		// JDBCドライバを読み込む
+		try {
+			Class.forName(DRIVER);
+		} catch (ClassNotFoundException e) {
+			throw new IllegalStateException("JDBCドライバを読み込めませんでした");
+		}
+		// データベースへ接続
+		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
+
+			// SQLを準備
+			String sql = "SELECT user_id, sei, mei, birthday, gender, postal_code, prefecture,"
+						+ "address, building, phone_number, mail, password, token, expire, create_date, mod_date,"
+						+ "del_date, del_flag "
+						+ "FROM users "
+						+ "WHERE mail = ? AND del_flag = 0";
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+			pStmt.setString(1, resetMail);
+
+			// SQLを実行し、結果表を取得
+			ResultSet rs = pStmt.executeQuery();
+
+			if (rs.next()) {
+				// 会員が存在したらデータを取得
+				// その会員を表すUserインスタンスを生成
 				Integer userId = rs.getInt("user_id");
 				String sei = rs.getString("sei");
 				String mei = rs.getString("mei");
@@ -85,14 +164,10 @@ public class UsersDAO {
 				String mail = rs.getString("mail");
 				String password = rs.getString("password");
 				String token = rs.getString("token");
-//				LocalDateTime expire = rs.getTimestamp("expire").toLocalDateTime();
-//				LocalDateTime createDate = rs.getTimestamp("create_date").toLocalDateTime();
-//				LocalDateTime modDate = rs.getTimestamp("mod_date").toLocalDateTime();
-//				LocalDateTime delDate = rs.getTimestamp("del_date").toLocalDateTime();
+				//				LocalDateTime expire = rs.getTimestamp("expire").toLocalDateTime();
 				Timestamp ts = rs.getTimestamp("expire");
 				LocalDateTime expire = (ts != null) ? ts.toLocalDateTime() : null;
-				ts = rs.getTimestamp("create_date");
-				LocalDateTime createDate = (ts != null) ? ts.toLocalDateTime() : null;
+				LocalDateTime createDate = rs.getTimestamp("create_date").toLocalDateTime();
 				ts = rs.getTimestamp("mod_date");
 				LocalDateTime modDate = (ts != null) ? ts.toLocalDateTime() : null;
 				ts = rs.getTimestamp("del_date");
@@ -116,87 +191,9 @@ public class UsersDAO {
 	}
 
 	/**
-	 * パスワードリセットを送るためのメールアドレスを探す
-	 * 
-	 * @param resetMail パスワードリセット用メールアドレス
-	 * @return ユーザー
-	 * @throws ClassNotFoundException 
-	 *         ドライバクラスが見つからなかった場合 
-	 * @throws SQLException 
-	 *         DB接続に失敗した場合 
-	 */
-	public User findByMail(String resetMail) {
-		User user = null;
-		// JDBCドライバを読み込む
-		try {
-			Class.forName(DRIVER);
-		} catch (ClassNotFoundException e) {
-			throw new IllegalStateException("JDBCドライバを読み込めませんでした");
-		}
-		// データベースへ接続
-		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
-
-			// SQLを準備
-			String sql = "SELECT user_id, sei, mei, birthday, gender, postal_code, prefecture,"
-					+ "address, building, phone_number, mail, password, token, expire, create_date, mod_date,"
-					+ "del_date, del_flag "
-					+ "FROM users "
-					+ "WHERE mail = ?";
-			PreparedStatement pStmt = conn.prepareStatement(sql);
-			pStmt.setString(1, resetMail);
-
-			// SQLを実行し、結果表を取得
-			ResultSet rs = pStmt.executeQuery();
-
-			if (rs.next()) {
-				// ユーザーが存在したらデータを取得
-				// そのユーザーを表すUserインスタンスを生成
-				Integer userId = rs.getInt("user_id");
-				String sei = rs.getString("sei");
-				String mei = rs.getString("mei");
-				LocalDate birthday = rs.getDate("birthday").toLocalDate();
-				int genderInt = rs.getInt("gender");
-				Gender gender = switch (genderInt) {
-				case 1 -> Gender.MALE;
-				case 2 -> Gender.FEMALE;
-				default -> Gender.OTHER;
-				};
-				String postalCode = rs.getString("postal_code");
-				String prefecture = rs.getString("prefecture");
-				String address = rs.getString("address");
-				String building = rs.getString("building");
-				String phoneNumber = rs.getString("phone_number");
-				String mail = rs.getString("mail");
-				String password = rs.getString("password");
-				String token = rs.getString("token");
-				//				LocalDateTime expire = rs.getTimestamp("expire").toLocalDateTime();
-				Timestamp ts = rs.getTimestamp("expire");
-				LocalDateTime expire = (ts != null) ? ts.toLocalDateTime() : null;
-				LocalDateTime createDate = rs.getTimestamp("create_date").toLocalDateTime();
-				LocalDateTime modDate = rs.getTimestamp("mod_date").toLocalDateTime();
-				LocalDateTime delDate = rs.getTimestamp("del_date").toLocalDateTime();
-				int delFlagInt = rs.getInt("del_flag");
-				boolean delFlag = false;
-				if (delFlagInt == 0) {
-					delFlag = false;
-				} else if (delFlagInt == 1) {
-					delFlag = true;
-				}
-				user = new User(userId, sei, mei, birthday, gender, postalCode, prefecture, address, building,
-						phoneNumber,
-						mail, password, token, expire, createDate, modDate, delDate, delFlag);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-		return user;
-	}
-
-	/**
 	 * パスワードリセットトークンと有効期限をDBに保存
 	 * 
-	 * @param userID ユーザーID
+	 * @param userID 会員ID
 	 * @param token パスワードリセットトークン
 	 * @param expire トークン有効期限
 	 * @return 実行結果
@@ -216,7 +213,9 @@ public class UsersDAO {
 		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
 
 			// SQLを準備
-			String sql = "UPDATE users SET token = ?, expire = ? WHERE user_id = ?";
+			String sql = "UPDATE users "
+						+ "SET token = ?, expire = ?, mod_date = CURRENT_TIMESTAMP "
+						+ "WHERE user_id = ?";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setString(1, token);
 			pStmt.setTimestamp(2, java.sql.Timestamp.valueOf(expire));
@@ -268,17 +267,17 @@ public class UsersDAO {
 			ResultSet rs = pStmt.executeQuery();
 
 			if (rs.next()) {
-				// ユーザーが存在したらデータを取得
-				// そのユーザーを表すUserインスタンスを生成
+				// 会員が存在したらデータを取得
+				// その会員を表すUserインスタンスを生成
 				Integer userId = rs.getInt("user_id");
 				String sei = rs.getString("sei");
 				String mei = rs.getString("mei");
 				LocalDate birthday = rs.getDate("birthday").toLocalDate();
 				int genderInt = rs.getInt("gender");
 				Gender gender = switch (genderInt) {
-				case 1 -> Gender.MALE;
-				case 2 -> Gender.FEMALE;
-				default -> Gender.OTHER;
+					case 1 -> Gender.MALE;
+					case 2 -> Gender.FEMALE;
+					default -> Gender.OTHER;
 				};
 				String postalCode = rs.getString("postal_code");
 				String prefecture = rs.getString("prefecture");
@@ -288,10 +287,13 @@ public class UsersDAO {
 				String mail = rs.getString("mail");
 				String password = rs.getString("password");
 				String token = rs.getString("token");
-				LocalDateTime expire = rs.getTimestamp("expire").toLocalDateTime();
+				Timestamp ts = rs.getTimestamp("expire");
+				LocalDateTime expire = (ts != null) ? ts.toLocalDateTime() : null;
 				LocalDateTime createDate = rs.getTimestamp("create_date").toLocalDateTime();
-				LocalDateTime modDate = rs.getTimestamp("mod_date").toLocalDateTime();
-				LocalDateTime delDate = rs.getTimestamp("del_date").toLocalDateTime();
+				ts = rs.getTimestamp("mod_date");
+				LocalDateTime modDate = (ts != null) ? ts.toLocalDateTime() : null;
+				ts = rs.getTimestamp("del_date");
+				LocalDateTime delDate = (ts != null) ? ts.toLocalDateTime() : null;
 				int delFlagInt = rs.getInt("del_flag");
 				boolean delFlag = false;
 				if (delFlagInt == 0) {
@@ -313,7 +315,7 @@ public class UsersDAO {
 	/**
 	 * パスワードを更新する
 	 * 
-	 * @param userId ユーザーID
+	 * @param userId 会員ID
 	 * @param newPassword 新しいパスワード
 	 * @return 実行結果
 	 * @throws ClassNotFoundException 
@@ -332,7 +334,9 @@ public class UsersDAO {
 		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
 
 			// SQLを準備
-			String sql = "UPDATE users SET password = ? WHERE user_id = ?";
+			String sql = "UPDATE users "
+						+ "SET password = ?, mod_date = CURRENT_TIMESTAMP "
+						+ "WHERE user_id = ?";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setString(1, newPassword);
 			pStmt.setInt(2, userId);
@@ -352,7 +356,7 @@ public class UsersDAO {
 	/**
 	 * パスワードリセットトークンを削除する
 	 * 
-	 * @param userId ユーザーID
+	 * @param userId 会員ID
 	 * @return 実行結果
 	 * @throws ClassNotFoundException 
 	 *         ドライバクラスが見つからなかった場合 
@@ -370,7 +374,9 @@ public class UsersDAO {
 		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
 
 			// SQLを準備
-			String sql = "UPDATE users SET token = NULL, expire = NULL WHERE user_id = ?";
+			String sql = "UPDATE users "
+						+ "SET token = NULL, expire = NULL, mod_date = CURRENT_TIMESTAMP "
+						+ "WHERE user_id = ?";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setInt(1, userId);
 
@@ -386,6 +392,16 @@ public class UsersDAO {
 		return true;
 	}
 
+	/**
+	 * 会員を登録する
+	 * 
+	 * @param user 会員情報
+	 * @return 実行結果
+	 * @throws ClassNotFoundException 
+	 *         ドライバクラスが見つからなかった場合 
+	 * @throws SQLException 
+	 *         DB接続に失敗した場合 
+	 */
 	public boolean registerUser(User user) {
 		// JDBCドライバを読み込む
 		try {
@@ -398,8 +414,8 @@ public class UsersDAO {
 
 			// SQLを準備
 			String sql = "INSERT INTO users(user_id, sei, mei, birthday, gender, postal_code, prefecture,"
-					+ "address, building, phone_number, mail, password, token, expire, del_flag)"
-					+ "VALUES(seq_user.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null, 0)";
+						+ "address, building, phone_number, mail, password, token, expire, del_flag)"
+						+ "VALUES(seq_user.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null, 0)";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setString(1, user.getSei());
 			pStmt.setString(2, user.getMei());
@@ -424,12 +440,12 @@ public class UsersDAO {
 		}
 		return true;
 	}
-	
+
 	/**
-	 * ユーザーIDをもとにユーザーを取得する
+	 * 会員IDをもとに会員を取得する
 	 * 
-	 * @param userId ユーザーID
-	 * @return ユーザー
+	 * @param userId 会員ID
+	 * @return 会員
 	 * @throws ClassNotFoundException 
 	 *         ドライバクラスが見つからなかった場合 
 	 * @throws SQLException 
@@ -448,10 +464,10 @@ public class UsersDAO {
 
 			// SQLを準備
 			String sql = "SELECT user_id, sei, mei, birthday, gender, postal_code, prefecture,"
-					+ "address, building, phone_number, mail, password, token, expire, create_date, mod_date,"
-					+ "del_date, del_flag "
-					+ "FROM users "
-					+ "WHERE user_id = ?";
+						+ "address, building, phone_number, mail, password, token, expire, create_date, mod_date,"
+						+ "del_date, del_flag "
+						+ "FROM users "
+						+ "WHERE user_id = ?";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setInt(1, inputUserId);
 
@@ -459,18 +475,18 @@ public class UsersDAO {
 			ResultSet rs = pStmt.executeQuery();
 
 			if (rs.next()) {
-				// ユーザーが存在したらデータを取得
-				// そのユーザーを表すUserインスタンスを生成
+				// 会員が存在したらデータを取得
+				// その会員を表すUserインスタンスを生成
 				Integer userId = rs.getInt("user_id");
 				String sei = rs.getString("sei");
 				String mei = rs.getString("mei");
 				Timestamp birthdayTs = rs.getTimestamp("birthday");
-			    LocalDate birthday = (birthdayTs != null) ? birthdayTs.toLocalDateTime().toLocalDate() : null;
+				LocalDate birthday = (birthdayTs != null) ? birthdayTs.toLocalDateTime().toLocalDate() : null;
 				int genderInt = rs.getInt("gender");
 				Gender gender = switch (genderInt) {
-				case 1 -> Gender.MALE;
-				case 2 -> Gender.FEMALE;
-				default -> Gender.OTHER;
+					case 1 -> Gender.MALE;
+					case 2 -> Gender.FEMALE;
+					default -> Gender.OTHER;
 				};
 				String postalCode = rs.getString("postal_code");
 				String prefecture = rs.getString("prefecture");
@@ -507,5 +523,96 @@ public class UsersDAO {
 			return null;
 		}
 		return user;
+	}
+
+	/**
+	 * 会員情報を更新する
+	 * 
+	 * @param user 会員情報
+	 * @return 実行結果
+	 * @throws ClassNotFoundException 
+	 *         ドライバクラスが見つからなかった場合 
+	 * @throws SQLException 
+	 *         DB接続に失敗した場合 
+	 */
+	public boolean updateUser(User user) {
+		// JDBCドライバを読み込む
+		try {
+			Class.forName(DRIVER);
+		} catch (ClassNotFoundException e) {
+			throw new IllegalStateException("JDBCドライバを読み込めませんでした");
+		}
+		// データベースへ接続
+		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
+
+			// SQLを準備
+			String sql = "UPDATE users "
+						+ "SET sei = ?, mei = ?, birthday = ?, gender = ?, postal_code = ?, "
+						+ "prefecture = ?, address = ?, building = ?, phone_number = ?, "
+						+ "mail = ?, password = ?, mod_date = CURRENT_TIMESTAMP "
+						+ "WHERE user_id = ?";
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+			pStmt.setString(1, user.getSei());
+			pStmt.setString(2, user.getMei());
+			pStmt.setDate(3, Date.valueOf(user.getBirthday()));
+			pStmt.setInt(4, user.getGender().getValue());
+			pStmt.setString(5, user.getPostalCode());
+			pStmt.setString(6, user.getPrefecture());
+			pStmt.setString(7, user.getAddress());
+			pStmt.setString(8, user.getBuilding());
+			pStmt.setString(9, user.getPhoneNumber());
+			pStmt.setString(10, user.getMail());
+			pStmt.setString(11, user.getPassword());
+			pStmt.setInt(12, user.getUserId());
+
+			// SQLを実行
+			int result = pStmt.executeUpdate();
+			if (result != 1) {
+				return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 退会する(論理削除)
+	 * 
+	 * @param userId 会員ID
+	 * @return 実行結果
+	 * @throws ClassNotFoundException 
+	 *         ドライバクラスが見つからなかった場合 
+	 * @throws SQLException 
+	 *         DB接続に失敗した場合 
+	 */
+	public boolean deleteUser(int userId) {
+		// JDBCドライバを読み込む
+		try {
+			Class.forName(DRIVER);
+		} catch (ClassNotFoundException e) {
+			throw new IllegalStateException("JDBCドライバを読み込めませんでした");
+		}
+		// データベースへ接続
+		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
+
+			// SQLを準備
+			String sql = "UPDATE users "
+						+ "SET del_flag = 1, mod_date = CURRENT_TIMESTAMP, del_date = CURRENT_TIMESTAMP "
+						+ "WHERE user_id = ?";
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+			pStmt.setInt(1, userId);
+
+			// SQLを実行
+			int result = pStmt.executeUpdate();
+			if (result != 1) {
+				return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 }

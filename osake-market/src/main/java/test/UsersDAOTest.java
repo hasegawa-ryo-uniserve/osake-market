@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import dao.UsersDAO;
 import model.Gender;
 import model.Login;
-import model.User;
+import model.entity.User;
 
 public class UsersDAOTest {
 
@@ -24,8 +24,11 @@ public class UsersDAOTest {
 //		testClearTokenOK(); // トークンと有効期限を削除するテスト
 //		testClearTokenNG(); // トークンと有効期限を削除に失敗するテスト
 //		testRegisterUserOK(); // 会員登録に成功するテスト
-		testRegisterUserNG(); // 会員登録に失敗するテスト
-		
+//		testRegisterUserNG(); // 会員登録に失敗するテスト
+//		testUpdateUserOK();	// 会員情報編集に成功するテスト
+//		testUpdateUserNG();	// 会員情報編集に失敗するテスト
+		testDeleteUserOK();	// 会員情報を削除(論理削除)するテスト
+		testDeleteUserNG();	// 会員情報を削除(論理削除)するテスト
 	}
 
 	public static void testFindByLoginOK() {
@@ -210,5 +213,48 @@ public class UsersDAOTest {
 			System.out.println("testRegisterUserNG：失敗しました");
 		}
 	}
-
+	
+	public static void testUpdateUserOK() {
+		UsersDAO dao = new UsersDAO();
+		User user = dao.findByUserId(2);
+		user.setSei("金城");
+		boolean result = dao.updateUser(user);
+		if (result) {
+			System.out.println("testUpdateUserOK：成功しました");
+		} else {
+			System.out.println("testUpdateUserOK：失敗しました");
+		}
+	}
+	
+	public static void testUpdateUserNG() {
+		UsersDAO dao = new UsersDAO();
+		User user = dao.findByUserId(2);
+		user.setSei(null);
+		boolean result = dao.updateUser(user);
+		if (!result) {
+			System.out.println("testUpdateUserNG：成功しました");
+		} else {
+			System.out.println("testUpdateUserNG：失敗しました");
+		}
+	}
+	
+	public static void testDeleteUserOK() {
+		UsersDAO dao = new UsersDAO();
+		boolean result = dao.deleteUser(2);
+		if (result) {
+			System.out.println("testDeleteUserOK：成功しました");
+		} else {
+			System.out.println("testDeleteUserOK：失敗しました");
+		}
+	}
+	
+	public static void testDeleteUserNG() {
+		UsersDAO dao = new UsersDAO();
+		boolean result = dao.deleteUser(0);
+		if (!result) {
+			System.out.println("testDeleteUserNG：成功しました");
+		} else {
+			System.out.println("testDeleteUserNG：失敗しました");
+		}
+	}
 }

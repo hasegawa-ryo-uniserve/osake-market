@@ -1,0 +1,342 @@
+@charset "UTF-8";
+/* ==========================================
+   PC版のスタイル（初期状態）
+   ========================================== */
+/* 注文入力 */	
+.paymentMethodInputTitle {
+	width: 40%;
+	margin: 5% auto 0;
+	font-weight: normal;
+	text-align: center;
+	margin-top: 5%;
+	margin-bottom: 3%;
+	border-bottom: 2px solid #a9a9a9;
+}
+.order-content {
+	width: 100%;
+    margin: 5% auto;
+	font-weight: normal;
+	text-align: center;
+	margin-top: 5%;
+	margin-bottom: 5%;
+	border-bottom: 2px solid #a9a9a9;
+}
+.paymentMethodInput {
+	width: 40%;
+	margin: 0 auto;
+}
+.paymentMethodInput select {
+	width: 100%;
+	margin-top: 5px;
+	font-size: 1rem;
+	height: 35px;
+}
+.order-input-submit {
+	margin-top: 10%;
+	width: 100%;
+	font-size: 1rem;
+}
+#bankArea {
+	color: green;
+	font-weight: bold;
+}
+.order-input-wrapper a {
+	display: block;
+	width: 40%;
+	margin: 1.5% auto 0;
+}
+
+.order-input-return {
+	width: 100%;
+	margin-top: 0;
+	font-size: 1rem;
+	padding: 10px;
+}
+
+/* 注文内容確認 */
+.order-confirm-wrapper h3 {
+	width: 60%;
+	margin: 0 auto 8px;
+	text-align: left;
+}
+.order-confirm-table {
+	width: 60%;
+	border-collapse: collapse;
+	margin: 0 auto;
+	margin-bottom: 40px;
+}
+
+.order-confirm-table th,
+.order-confirm-table td {
+	border: 1px solid black;
+	padding: 12px 16px;
+	text-align: left;
+}
+
+.order-confirm-table th {
+	background: #dcdcdc;
+	width: 30%;
+	font-weight: normal;
+}
+.order-confirm-submit {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	margin: 0 auto;
+	justify-content: center;
+	gap: 80px;
+}
+.order-confirm-submit form {
+    width: 220px;
+    margin: 0;
+}
+.modify-btn,
+.confirm-btn {
+    width: 100%;
+    height: 120%;
+}
+.modify-btn {
+	font-size: 1rem;
+	width: 100%;
+}
+
+/* 注文完了 */
+#order-complete {
+	text-align: center;
+}
+#order-complete .black-btn {
+	margin-top: 2%;
+	width: 30%;
+}
+
+/* 注文履歴一覧 */
+.order-wrapper {
+	display: flex;
+	flex-direction: row;
+	border: solid 1px;
+	border-width: 1px 1px 1px 8px;
+	width: 50%;
+	margin: 0 auto;
+	margin-top: 2%;
+	padding: 1%;
+	padding-left: 2%;
+	position: relative;
+	align-items: center;
+}
+.order-wrapper p {
+	font-size: 1.2rem;
+}
+.order-wrapper form {
+	margin-left: auto;
+}
+.order-wrapper form button {
+	width: 150px;
+	font-size: 1rem;
+}
+.pagination {
+	text-align: center;
+	margin: 30px 0;
+}
+
+.pagination a,
+.pagination strong {
+	margin: 0 8px;
+	font-size: 1.2rem;
+}
+
+.pagination strong {
+	font-weight: bold;
+}
+
+/* 注文履歴詳細 */
+.order-detail-wrapper {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+}
+.product-detail-image {
+	width: 50%;
+    max-width: 600px;
+	max-height: 400px;
+	flex-shrink: 0;
+	margin: 5%;
+}
+.order-detail-wrapper p {
+	flex: 1;
+	margin: 5%;
+	width: 50%;
+	line-height: 2.5;
+}
+.order-detail-wrapper p span {
+	display: inline-block;
+	margin-top: 30px;
+}
+.return-and-cancel {
+	display: flex;
+	flex-direction: row;
+	gap: 75px;
+	justify-content: center;
+	margin-top: 5%;
+	width: 100%;
+}
+.return {
+	padding: 7.5px;
+	font-size: 1rem;
+	height: 42px;
+	width: 250px;
+}
+.order-cancel {
+	padding: 10px;
+	font-size: 1rem;
+	width: 250px;
+}
+ 
+/* ==========================================
+   スマホ版のスタイル（画面幅750px以下）
+   ========================================== */
+@media(max-width: 750px) {
+	/* 注文入力 */
+	.order-input-wrapper {
+		margin-top: 10%;
+	}
+	.paymentMethodInputTitle {
+		width: 70%;
+	}
+	.paymentMethodInput {
+		width: 70%;
+		margin: 0 auto;
+	}
+	.order-input-wrapper a {
+		display: block;
+		width: 70%;
+		margin: 1% auto 0;
+	}
+	.order-input-return {
+		width: 100%;
+		margin-top: 20px;
+		font-size: 1rem;
+		padding: 10px;
+	}
+
+	/* 注文内容確認 */
+	.order-confirm-wrapper h3 {
+		width: 90%;
+        margin: 0 auto 8px;
+        text-align: left;
+	}
+	.info-table {
+        width: 90%;
+    	margin: 8px auto 30px;
+        border-collapse: collapse;
+    }
+    .info-table,
+    .info-table tbody,
+    .info-table tr,
+    .info-table th,
+    .info-table td {
+        display: block;
+        box-sizing: border-box;
+    }
+    .order-confirm-table th {
+        background: #e5e5e5;
+        text-align: left;
+        padding: 12px 15px;
+        border: 1px solid #ccc;
+        border-bottom: none;
+        width: 100%;
+    }
+    .order-confirm-table td {
+        padding: 12px 15px;
+        border: 1px solid #ccc;
+        border-bottom: none;
+        width: 100%;
+    } 
+    .order-confirm-table tr:last-child td {
+        border-bottom: 1px solid #ccc;
+    }
+	.item-table {
+		width: 90%;
+	}
+	
+	
+	
+	
+	.order-confirm-submit {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		margin: 0 auto;
+		text-align: center;
+		gap: 20px;
+		align-items: center;
+	}
+	.modify-btn,
+	.confirm-btn {
+	    width: 200px;
+	    height: 40px;
+	    padding: 0;
+	}
+	.modify-btn {
+		font-size: 1rem;
+	}
+	
+	/* 注文完了 */
+	#order-complete .page-title {
+		font-size: 1.5rem;
+	}
+	#order-complete p {
+		margin: 5%;
+	}
+	#order-complete .black-btn {
+		margin-top: 5%;
+		width: 80%;
+	}
+	
+	/* 注文履歴一覧 */
+	.order-wrapper {
+		width: 85%;
+		padding-left: 5%;
+		margin-top: 5%;
+		display: block;
+	}
+	.order-wrapper p {
+		font-size: 1rem;
+	}
+	.order-wrapper a {
+		display: inline-block;
+		max-width: 80%;
+	}
+	
+	/* 注文履歴詳細 */
+	.order-detail-wrapper {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		margin-bottom: 10%;
+	}
+	.product-detail-image {
+		width: 350px;
+		height: 320px;
+	}
+	.order-detail-wrapper p {
+		width: 100%;
+		margin: 0 10%;
+	}
+	.return-and-cancel {
+		display: flex;
+		flex-direction: column;
+		gap: 30px;
+		align-items: center;
+		width: 100%;
+	}
+	.return-and-cancel a,
+	.return-and-cancel form {
+		width: 80%;
+	}
+	.return {
+		width: 100%;
+	}
+	.order-cancel {
+		width: 100%;
+	}
+}

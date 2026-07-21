@@ -1,0 +1,78 @@
+@charset "UTF-8";
+/* ==========================================
+   PC版のスタイル（初期状態）
+   ========================================== */
+/* 通知一覧 */
+.notification-wrapper {
+	display: flex;
+	flex-direction: row;
+	border: solid 1px;
+	border-width: 1px 1px 1px 8px;
+	width: 50%;
+	margin: 0 auto;
+	margin-top: 2%;
+	padding: 1%;
+	padding-left: 2%;
+	position: relative
+}
+.notification-wrapper p {
+	font-size: 1.2rem;
+}
+.pagination {
+	text-align: center;
+	margin: 30px 0;
+}
+
+.pagination a,
+.pagination strong {
+	margin: 0 8px;
+	font-size: 1.2rem;
+}
+
+.pagination strong {
+	font-weight: bold;
+}
+
+/* 通知詳細 */
+.notification-date {
+	text-align: right;
+	margin: 2% 10% 0 0;
+}
+.notification-content {
+	text-align: justify;
+	margin: 2% 20% 0;
+}
+   
+/* ==========================================
+   スマホ版のスタイル（画面幅750px以下）
+   ========================================== */
+@media(max-width: 750px) {
+	/* 通知一覧 */
+	.notification-wrapper {
+		width: 85%;
+		padding-left: 5%;
+		margin-top: 5%;
+		display: block;
+	}
+	.notification-wrapper p {
+		font-size: 1rem;
+	}
+	.notification-wrapper a {
+		display: inline-block;
+		max-width: 80%;
+	}
+	
+	/* 通知詳細 */
+	.page-title {
+		margin: 10% 10% 5%;
+		font-size: 1.2rem;
+	}
+	.notification-date {
+		text-align: right;
+		margin: 0 10% 0 0;
+	}
+	.notification-content {
+		text-align: justify;
+		margin: 5% 5% 0;
+	}
+}
