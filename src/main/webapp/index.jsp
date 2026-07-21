@@ -31,7 +31,7 @@
 		<div class="top-img">
 			<div class="wrapper">
 				<p>
-					日本の銘酒をあなたに<br> 厳選されたクラフト酒をお届けします
+					日本の銘酒をあなたに<br>厳選されたクラフト酒をお届けします
 				</p>
 				<a href="${pageContext.request.contextPath}/product/list">
 					<button class="red-btn">商品を探す</button>
