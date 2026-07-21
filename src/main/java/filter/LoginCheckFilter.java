@@ -28,7 +28,6 @@ public class LoginCheckFilter extends HttpFilter {
 		if(requestURL.contains("/css/")
 				|| requestURL.contains("/images/")
 				|| requestURL.equals(request.getContextPath() + "/")
-				|| requestURL.endsWith("/login")
 				|| requestURL.contains("/product/list")
 				|| requestURL.contains("/product/detail")
 				|| requestURL.endsWith("/legal")
@@ -39,6 +38,19 @@ public class LoginCheckFilter extends HttpFilter {
 				|| requestURL.contains("/register/user")) {
 			chain.doFilter(request, response);
 			return;
+		}
+		
+		if(requestURL.endsWith("/login")) {
+
+		    if(loginUser != null) {
+		        // ログイン済みならマイページへ
+		        response.sendRedirect(request.getContextPath() + "/");
+		        return;
+		    }
+
+		    // 未ログインならログイン画面へ
+		    chain.doFilter(request, response);
+		    return;
 		}
 		
 		// ログイン済みならそのまま

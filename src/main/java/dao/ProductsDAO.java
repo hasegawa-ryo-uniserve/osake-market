@@ -177,7 +177,7 @@ public class ProductsDAO {
 	 *         DB接続に失敗した場合 
 	 */
 	public Product findByProductId(int inputProductId, Integer userId) {
-		Product product = new Product();
+		Product product = null;
 		// JDBCドライバを読み込む
 		try {
 			Class.forName(DRIVER);
@@ -267,6 +267,7 @@ public class ProductsDAO {
 	 * ソートで商品一覧を絞込検索
 	 * 
 	 * @param sort ソート
+	 * @param userId 会員ID
 	 * @return 商品リスト
 	 * @throws ClassNotFoundException 
 	 *         ドライバクラスが見つからなかった場合 
@@ -363,6 +364,7 @@ public class ProductsDAO {
 	 * 
 	 * @param inputCategoryName カテゴリ名
 	 * @param sort ソート
+	 * @param userId 会員ID
 	 * @return 商品リスト
 	 * @throws ClassNotFoundException 
 	 *         ドライバクラスが見つからなかった場合 
@@ -716,7 +718,7 @@ public class ProductsDAO {
 		try {
 			// SQLを準備
 			String sql = "UPDATE products "
-						+ "SET stock = stock - ? "
+						+ "SET stock = stock - ?, mod_date = CURRENT_TIMESTAMP "
 						+ "WHERE product_id = ?";
 
 			PreparedStatement pStmt = conn.prepareStatement(sql);
@@ -834,7 +836,7 @@ public class ProductsDAO {
 
 			// SQLを準備
 			String sql = "UPDATE products "
-						+ "SET stock = stock + ? "
+						+ "SET stock = stock + ?, mod_date = CURRENT_TIMESTAMP "
 						+ "WHERE product_id = ?";
 
 			PreparedStatement pStmt = conn.prepareStatement(sql);

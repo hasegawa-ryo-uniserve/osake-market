@@ -43,7 +43,7 @@ public class Favorite {
      * @param delDate お気に入り削除日時
      * @param delFlag お気に入り削除フラグ
      */
-	public Favorite(int favoriteId, int userId, int productId, LocalDateTime createDate,
+	public Favorite(Integer favoriteId, int userId, int productId, LocalDateTime createDate,
 						LocalDateTime modDate, LocalDateTime delDate, boolean delFlag) {
 		this.favoriteId = favoriteId;
 		this.userId = userId;

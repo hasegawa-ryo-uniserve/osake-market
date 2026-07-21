@@ -1,5 +1,6 @@
 package model;
 
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Properties;
 
@@ -153,11 +154,14 @@ public class MailSender {
             
             // メール本文設定
             StringBuilder body = new StringBuilder();
+            
+            // 三桁区切り
+            NumberFormat nf = NumberFormat.getInstance();
 
             body.append("ご注文を受け付けました。\n\n");
             body.append("注文番号：").append(orderId).append("\n");
             body.append("支払方法：").append(paymentMethod).append("\n");
-            body.append("合計金額：").append(totalAmount).append("円\n\n");
+            body.append("合計金額：").append(nf.format(totalAmount)).append("円\n\n");
 
             body.append("■ご注文商品\n");
 

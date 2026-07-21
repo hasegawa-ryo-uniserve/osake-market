@@ -37,7 +37,6 @@ public class OrderItemsDAO {
 	 * @param orderId 注文ID
 	 * @param productId 商品ID
 	 * @param quantity 注文数
-	 * @param cart カート
 	 * @return 実行結果
 	 * @throws ClassNotFoundException 
 	 *         ドライバクラスが見つからなかった場合 
@@ -49,7 +48,7 @@ public class OrderItemsDAO {
 		try {
 			// SQLを準備
 			String sql = "INSERT INTO order_items(order_item_id, order_id, product_id, quantity, del_flag) "
-					+ "VALUES(seq_order_item.NEXTVAL, ?, ?, ?, 0)";
+						+ "VALUES(seq_order_item.NEXTVAL, ?, ?, ?, 0)";
 
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setInt(1, orderId);

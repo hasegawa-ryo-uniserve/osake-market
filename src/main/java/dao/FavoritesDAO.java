@@ -48,7 +48,7 @@ public class FavoritesDAO {
 		} catch (ClassNotFoundException e) {
 			throw new IllegalStateException("JDBCドライバを読み込めませんでした");
 		}
-		// データベースへ接続
+		// データベースに接続
 		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
 
 			// SQLを準備

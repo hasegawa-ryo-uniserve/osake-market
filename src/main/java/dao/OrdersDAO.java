@@ -87,6 +87,8 @@ public class OrdersDAO {
 	 * 注文一覧を取得
 	 * 
 	 * @param userId 会員ID
+	 * @param offset そのページより前の件数をスキップ
+	 * @param pageSize 1ページにおける件数
 	 * @return 注文リスト
 	 * @throws ClassNotFoundException 
 	 *         ドライバクラスが見つからなかった場合 
@@ -305,7 +307,7 @@ public class OrdersDAO {
 
 			// SQLを準備
 			String sql = "UPDATE orders "
-						+ "SET cancel = 1 "
+						+ "SET cancel = 1, mod_date = CURRENT_TIMESTAMP "
 						+ "WHERE order_id = ?";
 
 			PreparedStatement pStmt = conn.prepareStatement(sql);
