@@ -1,3 +1,5 @@
+# Maven
 target/
-*.class
-config.properties
+
+# 設定ファイル
+src/main/resources/config.properties
